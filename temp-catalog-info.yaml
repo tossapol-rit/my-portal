@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: test-node-4
+  description: A Node.js application created from Backstage template
+  annotations:
+    github.com/project-slug: tossapol-rit/test-node-4
+    backstage.io/techdocs-ref: dir:.
+spec:
+  type: service
+  owner: guests
+  lifecycle: experimental

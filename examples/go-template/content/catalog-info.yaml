@@ -4,9 +4,14 @@ metadata:
   name: ${{ values.name | dump }}
   description: ${{ values.description | dump }}
   annotations:
-    github.com/project-slug: ${{ values.repoUrl | parseRepoUrl | pick('owner') | dump }}/${{ values.name | dump }}
+    github.com/project-slug: tossapol1308/${{ values.name }}
     backstage.io/techdocs-ref: dir:.
+  tags:
+    - go
+    - api
+    - microservice
 spec:
   type: service
-  owner: guests
+  owner: user:default/${{ values.owner }}
   lifecycle: experimental
+  system: backend

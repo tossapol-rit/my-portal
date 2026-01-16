@@ -1,0 +1,10 @@
+start
+
+yarn start \
+  --config /Users/tossapol/Documents/poc/backstage-lab2/my-portal/packages/app/app-config.local.yaml \
+  --config /Users/tossapol/Documents/poc/backstage-lab2/my-portal/packages/backend/app-config.local.yaml
+
+
+set -a; source .env; set +a
+yarn workspace backend start --config ../../app-config.yaml --config ../../app-config.local.yaml
+yarn workspace app start --config ../../app-config.yaml --config ../../app-config.local.yaml

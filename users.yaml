@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: tossapol1308
+  namespace: default
+spec:
+  profile:
+    displayName: tossapol1308
+    email: tossapol.rit@gmail.com
+  memberOf: []

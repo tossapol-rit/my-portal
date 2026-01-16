@@ -29,7 +29,8 @@ backend:
   # The production database configuration is stored in app-config.production.yaml
   database:
     client: better-sqlite3
-    connection: ':memory:'
+    connection:
+      directory: ../../var
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
 integrations:
@@ -70,6 +71,10 @@ auth:
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
+  defaultAuthor:
+    name: Scaffolder
+    email: scaffolder@example.com
+  defaultCommitMessage: 'Initial commit'
 
 catalog:
   import:
@@ -78,21 +83,44 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Local example data, file locations are relative to the backend process, typically `packages/backend`
-    - type: file
-      target: ../../examples/entities.yaml
-
-    # Local example template
+    # Templates
     - type: file
       target: ../../examples/template/template.yaml
       rules:
         - allow: [Template]
+        
+    # Go service template
+    - type: file
+      target: ../../examples/go-template/template.yaml
+      rules:
+        - allow: [Template]
+    
+    # Systems
+    - type: file
+      target: ../../examples/systems/backend-system.yaml
+      rules:
+        - allow: [System]
 
-    # Local example organizational data
+    # User and organizational data
     - type: file
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    # GitHub repositories (ที่สร้างจาก templates)
+    - type: url
+      target: https://github.com/tossapol-rit/test-go-1/blob/main/catalog-info.yaml
+      rules:
+        - allow: [Component, API, System, Domain, Resource]
+    
+    - type: url
+      target: https://github.com/tossapol1308/test-go-4/blob/main/catalog-info.yaml
+      rules:
+        - allow: [Component, API, System, Domain, Resource]    # You can add more GitHub repositories manually
+    # - type: url
+    #   target: https://github.com/tossapol-rit/another-repo/blob/main/catalog-info.yaml
+    #   rules:
+    #     - allow: [Component, API, System, Domain, Resource]
 
     ## Uncomment these lines to add more example data
     # - type: url

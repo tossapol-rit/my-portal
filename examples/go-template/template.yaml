@@ -1,0 +1,101 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: go-service-template
+  title: Go Service Template
+  description: Create a new Go service with REST API, Docker support, and CI/CD pipeline
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: user:default/tossapol1308
+  type: service
+
+  parameters:
+    - title: Service Information
+      required:
+        - name
+        - description
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Unique name of the Go service
+          pattern: '^[a-z0-9\-]*$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Short description of the service
+          ui:widget: textarea
+          ui:options:
+            rows: 3
+        owner:
+          title: Owner  
+          type: string
+          description: Owner of the service
+          default: tossapol1308
+          
+    - title: Go Configuration
+      properties:
+        goVersion:
+          title: Go Version
+          type: string
+          description: Go version to use
+          default: '1.21'
+          enum:
+            - '1.21'
+            - '1.20'
+            - '1.19'
+        port:
+          title: Service Port
+          type: number
+          description: Port for the service to run on
+          default: 8080
+          
+    - title: Repository Information
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - tossapol1308
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          goVersion: ${{ parameters.goVersion }}
+          port: ${{ parameters.port }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        catalogInfoUrl: https://github.com/tossapol1308/${{ parameters.name }}/blob/main/catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}

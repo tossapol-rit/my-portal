@@ -1,0 +1,7 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: backend
+  description: Backend microservices system
+spec:
+  owner: team:infrastructure

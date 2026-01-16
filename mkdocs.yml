@@ -1,0 +1,4 @@
+site_name: my-portal
+docs_dir: docs
+plugins:
+  - techdocs-core
