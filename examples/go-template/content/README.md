@@ -11,6 +11,9 @@ This is a Go service created using Backstage Software Template. It provides a si
 - ✅ REST API endpoints
 - ✅ Health check endpoint
 - ✅ Docker support
+- ✅ Database integration (${{ values.databaseType | title }})
+- ✅ Docker Compose for local development
+- ✅ Environment configuration
 - ✅ Structured logging
 - ✅ JSON responses
 
@@ -19,11 +22,31 @@ This is a Go service created using Backstage Software Template. It provides a si
 ### Prerequisites
 
 - Go ${{ values.goVersion }}+ installed
-- Docker (optional)
+- Docker and Docker Compose
+- ${{ values.databaseType | title }} (if running without Docker)
+
+### Running with Docker Compose (Recommended)
+
+```bash
+# Copy environment file
+cp .env.example .env
+
+# Start all services (app + database)
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+```
 
 ### Running Locally
 
 ```bash
+# Start database (using Docker Compose)
+docker-compose up -d database
+
+# Copy environment file
+cp .env.example .env
+
 # Install dependencies
 go mod tidy
 

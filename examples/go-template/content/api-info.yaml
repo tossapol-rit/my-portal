@@ -4,14 +4,14 @@ metadata:
   name: ${{ values.name }}-api
   description: REST API for ${{ values.name }}
   annotations:
-    github.com/project-slug: ${{ values.destination.owner }}/${{ values.destination.repo }}
-    backstage.io/source-location: url:https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}/tree/main/
+    github.com/project-slug: ${{ values.owner }}/${{ values.name }}
+    backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}
   tags:
     - go
     - rest
     - openapi
   links:
-    - url: https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}/blob/main/openapi.yaml
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/openapi.yaml
       title: OpenAPI Specification
       icon: docs
 spec:

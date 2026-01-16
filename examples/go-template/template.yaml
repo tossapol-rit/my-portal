@@ -7,7 +7,7 @@ metadata:
   annotations:
     backstage.io/techdocs-ref: dir:.
 spec:
-  owner: user:default/tossapol1308
+  owner: user:default/tossapol-rit
   type: service
 
   parameters:
@@ -33,7 +33,7 @@ spec:
           title: Owner  
           type: string
           description: Owner of the service
-          default: tossapol1308
+          default: tossapol-rit
           
     - title: Go Configuration
       properties:
@@ -51,6 +51,26 @@ spec:
           type: number
           description: Port for the service to run on
           default: 8080
+        databaseType:
+          title: Database Type
+          type: string
+          description: Type of database to use
+          enum:
+            - postgres
+            - mysql
+            - mongodb
+            - redis
+          enumNames:
+            - PostgreSQL
+            - MySQL
+            - MongoDB
+            - Redis
+          default: postgres
+        databaseName:
+          title: Database Name
+          type: string
+          description: Name of the database
+          default: "{{ name | lower | replace('-', '_') }}_db"
           
     - title: Repository Information
       required:
@@ -64,7 +84,7 @@ spec:
             allowedHosts:
               - github.com
             allowedOwners:
-              - tossapol1308
+              - tossapol-rit
 
   steps:
     - id: fetch-base
@@ -78,6 +98,8 @@ spec:
           owner: ${{ parameters.owner }}
           goVersion: ${{ parameters.goVersion }}
           port: ${{ parameters.port }}
+          databaseType: ${{ parameters.databaseType }}
+          databaseName: ${{ parameters.databaseName }}
 
     - id: publish
       name: Publish
@@ -90,13 +112,19 @@ spec:
       name: Register
       action: catalog:register
       input:
-        catalogInfoUrl: https://github.com/${{ parameters.destination.owner }}/${{ parameters.destination.repo }}/blob/main/catalog-info.yaml
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/catalog-info.yaml
 
     - id: register-api
       name: Register API
       action: catalog:register
       input:
-        catalogInfoUrl: https://github.com/${{ parameters.destination.owner }}/${{ parameters.destination.repo }}/blob/main/api-info.yaml
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/api-info.yaml
+
+    - id: register-database
+      name: Register Database
+      action: catalog:register
+      input:
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/database-info.yaml
 
   output:
     links:
@@ -108,3 +136,6 @@ spec:
       - title: API Documentation
         icon: docs
         entityRef: ${{ steps.register-api.output.entityRef }}
+      - title: Database
+        icon: storage
+        entityRef: ${{ steps.register-database.output.entityRef }}

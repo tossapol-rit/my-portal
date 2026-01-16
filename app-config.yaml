@@ -108,15 +108,15 @@ catalog:
         - allow: [User, Group]
 
     # GitHub repositories (ที่สร้างจาก templates)
-    - type: url
-      target: https://github.com/tossapol-rit/test-go-1/blob/main/catalog-info.yaml
-      rules:
-        - allow: [Component, API, System, Domain, Resource]
+    # - type: url
+    #   target: https://github.com/tossapol-rit/test-go-1/blob/main/catalog-info.yaml
+    #   rules:
+    #     - allow: [Component, API, System, Domain, Resource]
     
-    - type: url
-      target: https://github.com/tossapol1308/test-go-4/blob/main/catalog-info.yaml
-      rules:
-        - allow: [Component, API, System, Domain, Resource]    # You can add more GitHub repositories manually
+    # - type: url
+    #   target: https://github.com/tosapol-rit/test-go-4/blob/main/catalog-info.yaml
+    #   rules:
+    #     - allow: [Component, API, System, Domain, Resource]    # You can add more GitHub repositories manually
     # - type: url
     #   target: https://github.com/tossapol-rit/another-repo/blob/main/catalog-info.yaml
     #   rules:

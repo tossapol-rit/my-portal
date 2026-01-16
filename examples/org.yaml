@@ -20,32 +20,6 @@ spec:
     email: tossapol.rit@gmail.com
   memberOf: [guests]
 ---
-# User for GitHub tossapol1308 - by username
-apiVersion: backstage.io/v1alpha1
-kind: User
-metadata:
-  name: tossapol1308
-  annotations:
-    github.com/user-login: tossapol1308
-spec:
-  profile:
-    displayName: tossapol1308
-    email: tossapol.rit@gmail.com
-  memberOf: [guests]
----
-# User for GitHub tossapol1308 - by email local part
-apiVersion: backstage.io/v1alpha1
-kind: User
-metadata:
-  name: tossapol.rit
-  annotations:
-    github.com/user-login: tossapol1308
-spec:
-  profile:
-    displayName: tossapol.rit
-    email: tossapol.rit@gmail.com
-  memberOf: [guests]
----
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-group
 apiVersion: backstage.io/v1alpha1
 kind: Group

@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  {% if values.databaseType == 'postgres' %}
+  database:
+    image: postgres:15-alpine
+    container_name: {{ values.name }}-postgres
+    environment:
+      POSTGRES_DB: {{ values.databaseName }}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  {% elif values.databaseType == 'mysql' %}
+  database:
+    image: mysql:8.0
+    container_name: {{ values.name }}-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_DATABASE: {{ values.databaseName }}
+      MYSQL_USER: mysql
+      MYSQL_PASSWORD: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+  {% elif values.databaseType == 'mongodb' %}
+  database:
+    image: mongo:7.0
+    container_name: {{ values.name }}-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: {{ values.databaseName }}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mongodb_data:
+  {% elif values.databaseType == 'redis' %}
+  database:
+    image: redis:7.2-alpine
+    container_name: {{ values.name }}-redis
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis_data:
+  {% endif %}
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: {{ values.name }}-app
+    environment:
+      - PORT={{ values.port }}
+      {% if values.databaseType == 'postgres' %}
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/{{ values.databaseName }}?sslmode=disable
+      {% elif values.databaseType == 'mysql' %}
+      - DATABASE_URL=mysql://mysql:mysql@database:3306/{{ values.databaseName }}
+      {% elif values.databaseType == 'mongodb' %}
+      - DATABASE_URL=mongodb://mongo:mongo@database:27017/{{ values.databaseName }}
+      {% elif values.databaseType == 'redis' %}
+      - DATABASE_URL=redis://:redis@database:6379/0
+      {% endif %}
+    ports:
+      - "{{ values.port }}:{{ values.port }}"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/vendor

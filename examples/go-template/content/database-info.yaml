@@ -1,0 +1,26 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: ${{ values.name }}-database
+  description: ${{ values.databaseType | title }} database for ${{ values.name }}
+  annotations:
+    github.com/project-slug: ${{ values.owner }}/${{ values.name }}
+    backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}
+  tags:
+    - ${{ values.databaseType }}
+    - database
+    - storage
+  links:
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}
+      title: Source Code
+      icon: github
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/docker-compose.yml
+      title: Docker Compose
+      icon: docs
+spec:
+  type: database
+  owner: user:default/${{ values.owner }}
+  lifecycle: experimental
+  system: backend
+  dependencyOf:
+    - component:default/${{ values.name }}

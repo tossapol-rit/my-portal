@@ -19,8 +19,8 @@ This Go service provides a RESTful API with the following features:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}.git
-cd ${{ values.destination.repo }}
+git clone https://github.com/${{ values.owner }}/${{ values.name }}.git
+cd ${{ values.name }}
 ```
 
 2. Install dependencies:

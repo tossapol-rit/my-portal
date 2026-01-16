@@ -55,4 +55,7 @@ e2e-test-report/
 # Cache
 .cache/
 
+# Local development databases
+var/
+
 .env
