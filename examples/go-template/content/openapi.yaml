@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: ${{ values.name }}
+  description: ${{ values.description }}
+  version: 1.0.0
+  contact:
+    name: ${{ values.owner }}
+    url: https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:${{ values.port }}
+    description: Local development server
+
+paths:
+  /:
+    get:
+      summary: Welcome message
+      description: Returns a welcome message for the API
+      responses:
+        '200':
+          description: Welcome message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Welcome to ${{ values.name }}!"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-01-16T10:30:00Z"
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns the health status of the service
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /ready:
+    get:
+      summary: Readiness check
+      description: Returns the readiness status of the service
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: Service is not ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/info:
+    get:
+      summary: Service information
+      description: Returns information about the service
+      tags:
+        - Info
+      responses:
+        '200':
+          description: Service information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceInfo'
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, ready]
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-16T10:30:00Z"
+        version:
+          type: string
+          example: "1.0.0"
+      required:
+        - status
+        - timestamp
+
+    ServiceInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "${{ values.name }}"
+        version:
+          type: string
+          example: "1.0.0"
+        description:
+          type: string
+          example: "${{ values.description }}"
+        goVersion:
+          type: string
+          example: "${{ values.goVersion }}"
+        buildTime:
+          type: string
+          format: date-time
+          example: "2024-01-16T10:30:00Z"
+        uptime:
+          type: string
+          example: "2h30m45s"
+      required:
+        - name
+        - version
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Service temporarily unavailable"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-01-16T10:30:00Z"
+        code:
+          type: integer
+          example: 503
+      required:
+        - error
+        - timestamp
+        - code
+
+tags:
+  - name: Health
+    description: Health and readiness check endpoints
+  - name: Info
+    description: Service information endpoints
