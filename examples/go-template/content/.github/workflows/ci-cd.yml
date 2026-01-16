@@ -21,9 +21,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        key: ${{ '${{ runner.os }}-go-${{ hashFiles(\'**/go.sum\') }}' }}
         restore-keys: |
-          ${{ runner.os }}-go-
+          ${{ '${{ runner.os }}-go-' }}
 
     - name: Install dependencies
       run: go mod download
@@ -104,11 +104,11 @@ jobs:
   deploy:
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: ${{ '${{ github.ref == \'refs/heads/main\' }}' }}
     steps:
     - uses: actions/checkout@v4
 
     - name: Deploy to production
       run: |
-        echo "Deploying ${{ values.name }} to production..."
+        echo "Deploying to production..."
         # Add your deployment steps here
