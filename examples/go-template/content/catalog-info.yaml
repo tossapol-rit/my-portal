@@ -5,7 +5,7 @@ metadata:
   description: ${{ values.description | dump }}
   annotations:
     github.com/project-slug: ${{ values.owner }}/${{ values.name }}
-    backstage.io/techdocs-ref: dir:./docs
+    backstage.io/techdocs-ref: dir:.
     backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}
     github.com/workflows: ci-cd.yml
     backstage.io/managed-by-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
