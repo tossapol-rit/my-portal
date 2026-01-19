@@ -1,0 +1,30 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: ${{ values.name }}-database
+  description: Database for ${{ values.name }}
+  tags:
+    {% if values.databaseType == "postgres" %}
+    - postgres
+    - relational
+    {% elif values.databaseType == "mysql" %}
+    - mysql
+    - relational
+    {% elif values.databaseType == "mongodb" %}
+    - mongodb
+    - nosql
+    {% elif values.databaseType == "redis" %}
+    - redis
+    - cache
+    {% else %}
+    - none
+    {% endif %}
+  links:
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}
+      title: Source Code
+      icon: github
+spec:
+  type: database
+  owner: user:default/${{ values.owner }}
+  system: backend
+  dependsOn: []

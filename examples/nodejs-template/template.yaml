@@ -1,14 +1,14 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: go-service-template
-  title: Go Service Template
-  description: Create a new Go service with REST API, Docker support, and CI/CD pipeline
+  name: nodejs-service-template
+  title: Node.js Service Template
+  description: Create a new Node.js service with REST API integration, Docker support, and CI/CD pipeline
   annotations:
     backstage.io/techdocs-ref: dir:.
   tags:
-    - go
-    - golang
+    - nodejs
+    - express
     - api
     - microservice
     - rest
@@ -25,7 +25,7 @@ spec:
         name:
           title: Service Name
           type: string
-          description: Unique name of the Go service
+          description: Unique name of the Node.js service
           pattern: '^[a-z0-9\-]*$'
           ui:autofocus: true
         description:
@@ -40,31 +40,31 @@ spec:
           type: string
           description: Owner of the service
           default: tossapol-rit
-          
-    - title: Go Configuration
+
+    - title: Node.js Configuration
       properties:
-        goVersion:
-          title: Go Version
+        nodeVersion:
+          title: Node.js Version
           type: string
-          description: Go version to use
-          default: '1.25'
+          description: Select Node.js version
+          default: '24'
           enum:
-            - '1.25'
-            - '1.24'
-            - '1.23'
-            - '1.22'
-            - '1.21'
+            - '25'
+            - '24'
+            - '22'
+            - '20'
+            - '18'
           enumNames:
-            - 'Go 1.25 (Latest)'
-            - 'Go 1.24'
-            - 'Go 1.23'
-            - 'Go 1.22'
-            - 'Go 1.21'
+            - 'Node.js 25 (Current)'
+            - 'Node.js 24 (LTS)'
+            - 'Node.js 22'
+            - 'Node.js 20 (LTS)'
+            - 'Node.js 18 (LTS)'
         port:
           title: Service Port
           type: number
           description: Port for the service to run on
-          default: 8080
+          default: 3000
         databaseType:
           title: Database Type
           type: string
@@ -87,7 +87,7 @@ spec:
           type: string
           description: Name of the database
           default: "{{ name | lower | replace('-', '_') }}_db"
-          
+
     - title: Repository Information
       required:
         - repoUrl
@@ -112,7 +112,7 @@ spec:
           name: ${{ parameters.name }}
           description: ${{ parameters.description }}
           owner: ${{ parameters.owner }}
-          goVersion: ${{ parameters.goVersion }}
+          nodeVersion: ${{ parameters.nodeVersion }}
           port: ${{ parameters.port }}
           databaseType: ${{ parameters.databaseType }}
           databaseName: ${{ parameters.databaseName }}

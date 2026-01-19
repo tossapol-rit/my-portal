@@ -11,11 +11,11 @@ metadata:
     backstage.io/managed-by-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
     backstage.io/managed-by-origin-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
   tags:
-    - angular
-    - frontend
-    - spa
-    - typescript
-    - web-app
+    - nodejs
+    - express
+    - api
+    - microservice
+    - rest
   links:
     - url: https://github.com/${{ values.owner }}/${{ values.name }}
       title: Source Code
@@ -27,7 +27,7 @@ spec:
   type: service
   owner: user:default/${{ values.owner }}
   lifecycle: experimental
-  system: frontend
+  system: backend
   providesApis:
     - ${{ values.name }}-api
   dependsOn:

@@ -1,0 +1,15 @@
+{% if values.databaseType != 'none' -%}
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: ${{ values.name }}-database
+  description: ${{ values.databaseType | capitalize }} database for ${{ values.name }}
+  tags:
+    - database
+    - ${{ values.databaseType }}
+spec:
+  type: ${{ values.databaseType }}
+  owner: user:default/${{ values.owner }}
+  system: backend
+  lifecycle: experimental
+{% endif -%}

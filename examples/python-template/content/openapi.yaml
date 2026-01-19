@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: ${{ values.name }}
+  description: ${{ values.description }}
+  version: 1.0.0
+  contact:
+    name: ${{ values.owner }}
+
+servers:
+  - url: http://localhost:${{ values.port }}
+    description: Local development server
+
+paths:
+  /:
+    get:
+      summary: Root endpoint
+      description: Returns service information
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: ${{ values.name }}
+                  version:
+                    type: string
+                    example: 1.0.0
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns service health status
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+                  service:
+                    type: string
+                    example: ${{ values.name }}
+                  version:
+                    type: string
+                    example: 1.0.0
+
+{% if values.databaseType != 'none' -%}
+  /api/v1/db-status:
+    get:
+      summary: Database status
+      description: Returns database connection status
+      responses:
+        '200':
+          description: Database status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  database:
+                    type: string
+                    example: ${{ values.databaseType }}
+                  connected:
+                    type: boolean
+                    example: true
+{% endif -%}
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+    
+    DBStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        database:
+          type: string
+        connected:
+          type: boolean

@@ -1,0 +1,109 @@
+version: '3.8'
+
+services:
+  {{ values.name }}:
+    build: .
+    ports:
+      - "{{ values.port }}:{{ values.port }}"
+    environment:
+      - DB_HOST={{ values.databaseType }}
+      - DB_PORT={% if values.databaseType == 'postgres' %}5432{% elif values.databaseType == 'mysql' %}3306{% elif values.databaseType == 'mongodb' %}27017{% elif values.databaseType == 'redis' %}6379{% endif %}
+
+      - DB_NAME={{ values.databaseName }}
+      - DB_USER={% if values.databaseType == 'postgres' %}postgres{% elif values.databaseType == 'mysql' %}root{% elif values.databaseType == 'mongodb' %}root{% endif %}
+
+      - DB_PASSWORD={% if values.databaseType == 'postgres' %}postgres{% elif values.databaseType == 'mysql' %}root{% elif values.databaseType == 'mongodb' %}root{% elif values.databaseType == 'redis' %}redis{% endif %}
+
+    depends_on:
+      {% if values.databaseType != 'none' -%}
+      - {{ values.databaseType }}
+      {% endif -%}
+    networks:
+      - app-network
+
+{% if values.databaseType == 'postgres' -%}
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_DB={{ values.databaseName }}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+{% elif values.databaseType == 'mysql' -%}
+  mysql:
+    image: mysql:8.4
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE={{ values.databaseName }}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+{% elif values.databaseType == 'mongodb' -%}
+  mongodb:
+    image: mongo:8
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE={{ values.databaseName }}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - app-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+{% elif values.databaseType == 'redis' -%}
+  redis:
+    image: redis:7-alpine
+    command: redis-server --requirepass redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+{% endif -%}
+
+networks:
+  app-network:
+    driver: bridge
+
+{% if values.databaseType != 'none' -%}
+volumes:
+  {% if values.databaseType == 'postgres' -%}
+  postgres-data:
+  {% elif values.databaseType == 'mysql' -%}
+  mysql-data:
+  {% elif values.databaseType == 'mongodb' -%}
+  mongodb-data:
+  {% elif values.databaseType == 'redis' -%}
+  redis-data:
+  {% endif -%}
+{% endif -%}

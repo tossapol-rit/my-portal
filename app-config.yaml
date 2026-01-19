@@ -1,9 +1,9 @@
 app:
-  title: Scaffolded Backstage App
+  title: PTTEP Developer Portal
   baseUrl: http://localhost:3000
 
 organization:
-  name: My Company
+  name: PTTEP Developer Portal
 
 backend:
   # Used for enabling authentication, secret is shared by all backend plugins
@@ -66,8 +66,12 @@ techdocs:
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
   providers:
-    # See https://backstage.io/docs/auth/guest/provider
-    guest: {}
+    # See https://backstage.io/docs/auth/github/provider
+    github:
+      development:
+        clientId: ${GITHUB_CLIENT_ID}
+        clientSecret: ${GITHUB_CLIENT_SECRET}
+  environment: development
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
@@ -83,12 +87,6 @@ catalog:
   rules:
     - allow: [Component, System, API, Resource, Location]
   locations:
-    # Templates
-    - type: file
-      target: ../../examples/template/template.yaml
-      rules:
-        - allow: [Template]
-        
     # Go service template
     - type: file
       target: ../../examples/go-template/template.yaml
@@ -98,6 +96,18 @@ catalog:
     # Angular service template
     - type: file
       target: ../../examples/angular-template/template.yaml
+      rules:
+        - allow: [Template]
+    
+    # Node.js service template
+    - type: file
+      target: ../../examples/nodejs-template/template.yaml
+      rules:
+        - allow: [Template]
+    
+    # Python service template
+    - type: file
+      target: ../../examples/python-template/template.yaml
       rules:
         - allow: [Template]
     

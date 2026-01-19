@@ -5,8 +5,8 @@ metadata:
   description: ${{ values.description | dump }}
   annotations:
     github.com/project-slug: ${{ values.owner }}/${{ values.name }}
-    backstage.io/techdocs-ref: url:https://github.com/${{ values.owner }}/${{ values.name }}
-    backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}
+    backstage.io/techdocs-ref: dir:.
+    backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/tree/main
     github.com/workflows: ci-cd.yml
     backstage.io/managed-by-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
     backstage.io/managed-by-origin-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
