@@ -1,0 +1,46 @@
+<div class="container">
+  <header class="header">
+    <h1>🚀 {{ title }}</h1>
+    <p class="version">Version: {{ version }}</p>
+  </header>
+
+  <main class="main-content">
+    <section class="welcome-section">
+      <h2>Welcome to {{ title }}!</h2>
+      <p>{{ description }}</p>
+    </section>
+
+    <section class="features">
+      <h3>Features</h3>
+      <ul>
+        <li>✅ Angular {{ '${{ values.angularVersion }}' }}</li>
+        <li>✅ TypeScript</li>
+        <li>✅ Standalone Components</li>
+        <li>✅ Responsive Design</li>
+        <li>✅ Docker Support</li>
+        <li>✅ CI/CD Pipeline</li>
+        <li>✅ {{ '${{ values.databaseType | title }}' }} Integration</li>
+      </ul>
+    </section>
+
+    <section class="links">
+      <h3>Quick Links</h3>
+      <div class="link-grid">
+        <a href="/api/health" class="link-card">
+          <h4>Health Check</h4>
+          <p>Check service status</p>
+        </a>
+        <a href="/api/info" class="link-card">
+          <h4>Service Info</h4>
+          <p>View service information</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Built with ❤️ using Angular and Backstage</p>
+  </footer>
+</div>
+
+<router-outlet></router-outlet>

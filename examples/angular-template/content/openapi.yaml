@@ -1,0 +1,73 @@
+openapi: 3.0.0
+info:
+  title: ${{ values.name }} API
+  description: REST API for ${{ values.name }}
+  version: 1.0.0
+  contact:
+    name: ${{ values.owner }}
+
+servers:
+  - url: http://localhost:${{ values.port }}
+    description: Development server
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      description: Check if the service is running
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+
+  /api/info:
+    get:
+      summary: Get service information
+      description: Returns information about the service
+      tags:
+        - Info
+      responses:
+        '200':
+          description: Service information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: ${{ values.name }}
+                  version:
+                    type: string
+                    example: 1.0.0
+                  description:
+                    type: string
+                    example: ${{ values.description }}
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        statusCode:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Info
+    description: Service information endpoints

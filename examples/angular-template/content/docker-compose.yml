@@ -88,8 +88,10 @@ volumes:
       context: .
       dockerfile: Dockerfile
     container_name: {{ values.name }}-app
+    ports:
+      - "{{ values.port }}:80"
     environment:
-      - PORT={{ values.port }}
+      - NODE_ENV=production
       {% if values.databaseType == 'postgres' %}
       - DATABASE_URL=postgres://postgres:postgres@database:5432/{{ values.databaseName }}?sslmode=disable
       {% elif values.databaseType == 'mysql' %}
@@ -99,11 +101,12 @@ volumes:
       {% elif values.databaseType == 'redis' %}
       - DATABASE_URL=redis://:redis@database:6379/0
       {% endif %}
-    ports:
-      - "{{ values.port }}:{{ values.port }}"
     depends_on:
       database:
         condition: service_healthy
-    volumes:
-      - .:/app
-      - /app/vendor
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

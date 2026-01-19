@@ -95,9 +95,20 @@ catalog:
       rules:
         - allow: [Template]
     
+    # Angular service template
+    - type: file
+      target: ../../examples/angular-template/template.yaml
+      rules:
+        - allow: [Template]
+    
     # Systems
     - type: file
       target: ../../examples/systems/backend-system.yaml
+      rules:
+        - allow: [System]
+    
+    - type: file
+      target: ../../examples/systems/frontend-system.yaml
       rules:
         - allow: [System]
 

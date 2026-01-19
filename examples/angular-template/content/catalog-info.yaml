@@ -1,0 +1,34 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ${{ values.name | dump }}
+  description: ${{ values.description | dump }}
+  annotations:
+    github.com/project-slug: ${{ values.owner }}/${{ values.name }}
+    backstage.io/techdocs-ref: url:https://github.com/${{ values.owner }}/${{ values.name }}
+    backstage.io/source-location: url:https://github.com/${{ values.owner }}/${{ values.name }}
+    github.com/workflows: ci-cd.yml
+    backstage.io/managed-by-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
+    backstage.io/managed-by-origin-location: url:https://github.com/${{ values.owner }}/${{ values.name }}/blob/main/catalog-info.yaml
+  tags:
+    - angular
+    - frontend
+    - spa
+    - typescript
+    - web-app
+  links:
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}
+      title: Source Code
+      icon: github
+    - url: https://github.com/${{ values.owner }}/${{ values.name }}/actions
+      title: CI/CD Pipeline
+      icon: github
+spec:
+  type: service
+  owner: user:default/${{ values.owner }}
+  lifecycle: experimental
+  system: frontend
+  providesApis:
+    - ${{ values.name }}-api
+  dependsOn:
+    - resource:default/${{ values.name }}-database

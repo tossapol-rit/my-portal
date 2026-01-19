@@ -1,0 +1,151 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: angular-service-template
+  title: Angular Service Template
+  description: Create a new Angular application with REST API integration, Docker support, and CI/CD pipeline
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+spec:
+  owner: user:default/tossapol-rit
+  type: service
+
+  parameters:
+    - title: Service Information
+      required:
+        - name
+        - description
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Unique name of the Angular service
+          pattern: '^[a-z0-9\-]*$'
+          ui:autofocus: true
+        description:
+          title: Description
+          type: string
+          description: Short description of the service
+          ui:widget: textarea
+          ui:options:
+            rows: 3
+        owner:
+          title: Owner  
+          type: string
+          description: Owner of the service
+          default: tossapol-rit
+          
+    - title: Angular Configuration
+      properties:
+        angularVersion:
+          title: Angular Version
+          type: string
+          description: Angular version to use
+          default: '17'
+          enum:
+            - '17'
+            - '16'
+            - '15'
+        nodeVersion:
+          title: Node Version
+          type: string
+          description: Node.js version to use
+          default: '20'
+          enum:
+            - '20'
+            - '18'
+            - '16'
+        port:
+          title: Service Port
+          type: number
+          description: Port for the service to run on
+          default: 4200
+        databaseType:
+          title: Database Type
+          type: string
+          description: Type of database to use
+          enum:
+            - postgres
+            - mysql
+            - mongodb
+            - redis
+          enumNames:
+            - PostgreSQL
+            - MySQL
+            - MongoDB
+            - Redis
+          default: postgres
+        databaseName:
+          title: Database Name
+          type: string
+          description: Name of the database
+          default: "{{ name | lower | replace('-', '_') }}_db"
+          
+    - title: Repository Information
+      required:
+        - repoUrl
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts:
+              - github.com
+            allowedOwners:
+              - tossapol-rit
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base
+      action: fetch:template
+      input:
+        url: ./content
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          angularVersion: ${{ parameters.angularVersion }}
+          nodeVersion: ${{ parameters.nodeVersion }}
+          port: ${{ parameters.port }}
+          databaseType: ${{ parameters.databaseType }}
+          databaseName: ${{ parameters.databaseName }}
+
+    - id: publish
+      name: Publish
+      action: publish:github
+      input:
+        description: This is ${{ parameters.name }}
+        repoUrl: ${{ parameters.repoUrl }}
+
+    - id: register
+      name: Register
+      action: catalog:register
+      input:
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/catalog-info.yaml
+
+    - id: register-api
+      name: Register API
+      action: catalog:register
+      input:
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/api-info.yaml
+
+    - id: register-database
+      name: Register Database
+      action: catalog:register
+      input:
+        catalogInfoUrl: ${{ steps.publish.output.remoteUrl | replace(".git", "") }}/blob/main/database-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
+      - title: API Documentation
+        icon: docs
+        entityRef: ${{ steps.register-api.output.entityRef }}
+      - title: Database
+        icon: storage
+        entityRef: ${{ steps.register-database.output.entityRef }}

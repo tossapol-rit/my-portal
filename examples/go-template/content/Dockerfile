@@ -1,3 +1,4 @@
+# Backstage template file - ignore linter errors for template variables
 # Build stage
 FROM golang:${{ values.goVersion }}-alpine AS builder
 

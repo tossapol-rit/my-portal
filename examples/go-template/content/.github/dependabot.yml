@@ -8,8 +8,6 @@ updates:
       day: "monday"
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "${{ values.owner }}"
     assignees:
       - "${{ values.owner }}"
     commit-message:
@@ -28,8 +26,6 @@ updates:
       day: "monday"
       time: "04:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "${{ values.owner }}"
     assignees:
       - "${{ values.owner }}"
     commit-message:
@@ -47,8 +43,6 @@ updates:
       day: "monday"
       time: "04:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "${{ values.owner }}"
     assignees:
       - "${{ values.owner }}"
     commit-message:
